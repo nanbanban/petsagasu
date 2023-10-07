@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,13 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PostController::class, 'index'])->name('index');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/post/{post_id}', [PostController::class, 'post'])->name('post');
+
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard', [PostController::class, 'show'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -29,3 +33,15 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/create', function () {
+    return view('create');
+})->name('create');
+Route::post('/store', [PostController::class, 'store'])->name('store');
+Route::get('/edit/{post_id}', [PostController::class, 'edit'])->name('edit');
+Route::post('/update/{post_id}', [PostController::class, 'update'])->name('update');
+Route::post('/delete/{post_id}', [PostController::class, 'delete'])->name('delete');
+Route::post('/store_comment', [CommentController::class, 'store'])->name('store_comment');
+Route::get('/edit_comment/{comment_id}', [CommentController::class, 'edit'])->name('edit_comment');
+Route::post('/update_comment/{comment_id}', [CommentController::class, 'update'])->name('update_comment');
+Route::post('/delete_comment/{comment_id}', [CommentController::class, 'delete'])->name('delete_comment');
